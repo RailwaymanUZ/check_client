@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Всі клієнти
+{% endblock%}
+
+{% block body %}
+    <h1>Список всіх клієнтів</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Назва компанії</th>
+            <th>Номер документа</th>
+            <th>Реквізити компанії</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for elements in client %}
+            <tr onclick="toggleList(event)">
+                <td>{{ elements.name_company }}</td>
+                <td>{{ elements.number_docs }}</td>
+                <td>{{ elements.company_details }}</td>
+                <td>
+                    <form action="/delete_client" method="POST">
+                        <input type="hidden" name="name_company" value="{{ elements.name_company }}">
+                        <input type="hidden" name="number_docs" value="{{ elements.number_docs }}">
+                        <input type="hidden" name="company_details" value="{{ elements.company_details }}">
+                        <button class="btn btn-danger" type="submit">Видалити</button>
+                    </form>
+
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <a href="/add_client" class="btn btn-success">Додати нового клієнта</a>
+
+
+{% endblock %}
+
+
