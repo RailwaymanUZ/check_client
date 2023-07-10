@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Додавання клієнта
+    Шаблони користувача
 {% endblock%}
 
 {% block body %}
     <h1>Оберіть потрібний шаблон</h1>
-
+    <embed src="{{ url_for('static', filename='Рахунок.pdf') }}" width="70%" height="600px" type="application/pdf">
+    <embed src="{{ url_for('static', filename='Рахунокй.pdf') }}" width="70%" height="600px" type="application/pdf">
 {% endblock %}
+

@@ -1,6 +1,8 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from db import value_to_db
+from docx import Document
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///client.db'
@@ -100,6 +102,13 @@ def edit_client():
 
 @app.route('/user_templates')
 def user_templates():
+    '''
+    doc_file = 'Рахунок.docx'
+    doc = Document(doc_file)
+    content = []
+    for paragraph in doc.paragraphs:
+        content.append(paragraph.text)
+    '''
     return render_template('user_templates.html')
 
 
