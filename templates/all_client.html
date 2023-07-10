@@ -21,6 +21,15 @@
                 <td>{{ elements.number_docs }}</td>
                 <td>{{ elements.company_details }}</td>
                 <td>
+                    <form action="/edit_client" method="POST">
+                        <input type="hidden" name="name_company" value="{{ elements.name_company }}">
+                        <input type="hidden" name="number_docs" value="{{ elements.number_docs }}">
+                        <input type="hidden" name="company_details" value="{{ elements.company_details }}">
+                        <input type="hidden" name="hiden_information" value="first_vision">
+                        <button class="btn btn-success" type="submit">Редагувати</button>
+                    </form>
+                </td>
+                <td>
                     <form action="/delete_client" method="POST">
                         <input type="hidden" name="name_company" value="{{ elements.name_company }}">
                         <input type="hidden" name="number_docs" value="{{ elements.number_docs }}">

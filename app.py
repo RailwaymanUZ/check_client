@@ -57,12 +57,50 @@ def delete_client():
     name_company = request.form['name_company']
     number_docs = request.form['number_docs']
     company_details = request.form['company_details']
-
-    print(name_company)
-    print(number_docs)
-    print(company_details)
+    del_client = Client.query.filter_by(name_company=name_company, number_docs=number_docs,
+                                        company_details=company_details).first()
+    if del_client:
+        db.session.delete(del_client)
+        db.session.commit()
 
     return redirect('/all_client')
+
+
+@app.route('/edit_client', methods=['POST'])
+def edit_client():
+    hiden_information = request.form['hiden_information']
+    if hiden_information == 'first_vision':
+        name_company = request.form['name_company']
+        number_docs = request.form['number_docs']
+        company_details = request.form['company_details']
+        old_client = Client(name_company=name_company, number_docs=number_docs, company_details=company_details)
+
+        return render_template('edit_client.html', old_client=old_client)
+
+    if hiden_information == 'chenge':
+        old_name_company = request.form['old_name_company']
+        old_number_docs = request.form['old_number_docs']
+        old_company_details = request.form['old_company_details']
+        name_company = request.form['name_company']
+        number_docs = request.form['number_docs']
+        company_details = request.form['company_details']
+        if old_name_company != name_company or old_number_docs != number_docs or old_company_details != company_details:
+            old_client = Client.query.filter_by(name_company=old_name_company, number_docs=old_number_docs,
+                                        company_details=old_company_details).first()
+            if old_client:
+                db.session.delete(old_client)
+                db.session.commit()
+            edit_client = Client(id=1, name_company=name_company, number_docs=number_docs, company_details=company_details)
+            try:
+                db.session.add(edit_client)
+                db.session.commit()
+            except:
+                return 'При зміні клієнта виникла помилка'
+            return redirect('/all_client')
+
+@app.route('/user_templates')
+def user_templates():
+    return render_template('user_templates.html')
 
 
 if __name__ == '__main__':

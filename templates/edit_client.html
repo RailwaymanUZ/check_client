@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Редагування клієнта
+{% endblock%}
+
+{% block body %}
+    <h1>Редагування данних клієнта</h1>
+    <div class="container mt-5">
+    <form method="POST">
+        <input type="hidden" name="old_name_company" value="{{ old_client.name_company }}">
+        <input type="hidden" name="old_number_docs" value="{{ old_client.number_docs}}">
+        <input type="hidden" name="old_company_details" value="{{ old_client.company_details }}">
+        <input type="hidden" name="hiden_information" value="chenge">
+        <input type="text" name="name_company" id="name_company" class="form-control" value="{{ old_client.name_company }}" required><br>
+        <input type="number_docs" name="number_docs" id="number_docs" class="form-control" value="{{ old_client.number_docs }}" required><br>
+        <textarea name="company_details" id="company_details" class="form-control" rows="12" required>{{ old_client.company_details }}</textarea><br>
+        <input type="submit" class="btn btn-success" value="Підтвердити редагування">
+    </form>
+    </div>
+{% endblock%}
