@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from db import value_to_db
-from functions import make_doc, doc_to_pdf, doc_to_pdf_new
+from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files
 
 
 app = Flask(__name__)
@@ -121,14 +121,8 @@ def user_templates():
     else:
         #Выбираем всех клиентов
         client = Client.query.all()
-        '''
-        doc_file = 'Рахунок.docx'
-        doc = Document(doc_file)
-        content = []
-        for paragraph in doc.paragraphs:
-            content.append(paragraph.text)
-        '''
-        return render_template('user_templates.html', client=client)
+        files = all_files()
+        return render_template('user_templates.html', client=client, files=files)
 
 @app.route('/upload', methods=['POST', 'GET'])
 def upload():

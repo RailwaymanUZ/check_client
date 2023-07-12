@@ -2,45 +2,46 @@
 
 {% block title %}
     Шаблони користувача
-{% endblock%}
+{% endblock %}
 
 {% block body %}
     <h1>Оберіть потрібний шаблон</h1><br>
     <h2>Стандартні зразки</h2>
 
 
-<select id="user_templates" class="form-select form-select-lg mb-3">
-  <option selected="selected" disabled>Оберіть необхідний шаблон</option>
-  <option value="standart_1">Стандартний приклад 1</option>
-  <option value="standart_2">Стандартний приклад 2</option>
-</select>
+    <select id="user_templates" class="form-select form-select-lg mb-3">
+        <option selected="selected" disabled>Оберіть необхідний шаблон</option>
+        <option value="standart_1">Стандартний приклад 1</option>
+        <option value="standart_2">Стандартний приклад 2</option>
+    </select>
 
-<div class="doc_templates_standart">
-     <div id="standart_1-info" class="docs" style="display:none">
-        <h3>Стандартний приклад 1</h3>
-        <table width="100%">
-            <tr>
-                <td width="90%">
-                    <iframe src="{{ url_for('static', filename='Приклад_1.pdf') }}" width="100%" height="600px"></iframe>
-                </td>
-                <td>
-                    <form method="post" action="/user_templates">
-                        <input type="hidden" name="doc" value="Приклад_1">
-                        <select class="form-select-sm" name="name_company">
-                            <option selected="selected" disabled>Оберіть необхідного клієнта</option>
-                            {% for element in client %}
-                            <option value="{{ element.name_company }}">{{ element.name_company }}</option>
-                            {% endfor %}
-                        </select>
-                        <input name="money" class="form-control" placeholder="Введіть сумму"><br>
-                        <button class="btn btn-success" type="submit">Сформувати</button>
-                    </form>
-            </tr>
-        </table>
-     </div>
+    <div class="doc_templates_standart">
+        <div id="standart_1-info" class="docs" style="display:none">
+            <h3>Стандартний приклад 1</h3>
+            <table width="100%">
+                <tr>
+                    <td width="90%">
+                        <iframe src="{{ url_for('static', filename='Приклад_1.pdf') }}" width="100%" height="600px"></iframe>
+                    </td>
+                    <td>
+                        <form method="post" action="/user_templates">
+                            <input type="hidden" name="doc" value="Приклад_1">
+                            <select class="form-select-sm" name="name_company">
+                                <option selected="selected" disabled>Оберіть необхідного клієнта</option>
+                                {% for element in client %}
+                                <option value="{{ element.name_company }}">{{ element.name_company }}</option>
+                                {% endfor %}
+                            </select>
+                            <input name="money" class="form-control" placeholder="Введіть сумму"><br>
+                            <button class="btn btn-success" type="submit">Сформувати</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-      <div id="standart_2-info" class="docs" style ='display:none'>
-        <h3>Стандартний приклад 2</h3>
+        <div id="standart_2-info" class="docs" style="display:none">
+            <h3>Стандартний приклад 2</h3>
             <table width="100%">
                 <tr>
                     <td width="90%">
@@ -61,38 +62,95 @@
                     </td>
                 </tr>
             </table>
-      </div>
-</div>
+        </div>
+    </div>
 
-<h2>Завантажені шаблони користувача</h2>
-<form method="POST", enctype="multipart/form-data" class="input_group" action="{{ url_for('upload') }}">
-    <input class="form-control" name="name_new_file" placeholder="Введіть назву шаблона">
-    <input class="form-control" type="file" name="new_file" >
-    <input type="submit" class="btn btn-success" value="Завантажити">
-</form>
+    <h2>Завантажені шаблони користувача</h2>
+    <form method="POST" enctype="multipart/form-data" class="input_group" action="{{ url_for('upload') }}">
+        <input class="form-control" name="name_new_file" placeholder="Введіть назву шаблона">
+        <input class="form-control" type="file" name="new_file">
+        <input type="submit" class="btn btn-success" value="Завантажити">
+    </form>
 
-<script>
-const fruitSelect = document.getElementById('user_templates');
-const fruitInfos = document.getElementsByClassName('docs');
+    <select id="user_templates_custom" class="form-select form-select-lg mb-3">
+        <option selected="selected" disabled>Оберіть необхідний шаблон</option>
+        {% for file in files %}
+        <option value="{{ file }}">{{ file }}</option>
+        {% endfor %}
+    </select>
 
-// Отображаем блок с информацией о выбранном фрукте
-function showFruitInfo(fruit) {
-  for (let i = 0; i < fruitInfos.length; i++) {
-    fruitInfos[i].style.display = 'none'; // Скрываем все блоки с информацией
-  }
+    {% for file in files %}
+    <div class="custom_templates_users">
+        <div id="{{ file }}-info" class="doc_templates_custom" style="display:none">
+            <h3>{{ file }}</h3>
+            <table width="100%">
+                <tr>
+                    <td width="90%">
+                        <iframe src="{{ url_for('static', filename=file ~ '.pdf') }}" width="100%" height="600px"></iframe>
+                    </td>
+                    <td>
+                        <form method="post" action="/user_templates">
+                            <input type="hidden" name="doc" value="{{ file }}">
+                            <select class="form-select-sm" name="name_company">
+                                <option selected="selected" disabled>Оберіть необхідного клієнта</option>
+                                {% for element in client %}
+                                <option value="{{ element.name_company }}">{{ element.name_company }}</option>
+                                {% endfor %}
+                            </select>
+                            <input name="money" class="form-control" placeholder="Введіть сумму"><br>
+                            <button class="btn btn-success" type="submit">Сформувати</button>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
 
-  if (fruit) {
-    const fruitInfo = document.getElementById(fruit + '-info');
-    fruitInfo.style.display = 'block'; // Отображаем блок с информацией о выбранном фрукте
-  }
-}
+    <script>
+        const fruitSelect = document.getElementById('user_templates');
+        const fruitInfos = document.getElementsByClassName('docs');
 
-// Обработчик события изменения выбранного значения в выпадающем списке
-fruitSelect.addEventListener('change', function() {
-  const selectedFruit = fruitSelect.value;
-  showFruitInfo(selectedFruit);
-});
-</script>
+        // Show the selected fruit info
+        function showFruitInfo(fruit) {
+            for (let i = 0; i < fruitInfos.length; i++) {
+                fruitInfos[i].style.display = 'none'; // Hide all fruit info divs
+            }
 
+            if (fruit) {
+                const fruitInfo = document.getElementById(fruit + '-info');
+                fruitInfo.style.display = 'block'; // Show the selected fruit info div
+            }
+        }
+
+        // Event listener for the dropdown change event
+        fruitSelect.addEventListener('change', function () {
+            const selectedFruit = fruitSelect.value;
+            showFruitInfo(selectedFruit);
+        });
+
+    </script>
+    <script>
+
+        const docSelect = document.getElementById('user_templates_custom');
+        const docInfo = document.getElementsByClassName('doc_templates_custom');
+
+        // Show the selected document info
+        function showDocInfo(doc) {
+            for (let i = 0; i < docInfo.length; i++) {
+                docInfo[i].style.display = 'none'; // Hide all document info divs
+            }
+
+            if (doc) {
+                const selectedDocInfo = document.getElementById(doc + '-info');
+                selectedDocInfo.style.display = 'block'; // Show the selected document info div
+            }
+        }
+        // Event listener for the dropdown change event
+        docSelect.addEventListener('change', function () {
+            const selectedDoc = docSelect.value;
+            showDocInfo(selectedDoc);
+        });
+
+    </script>
 {% endblock %}
-

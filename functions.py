@@ -50,12 +50,14 @@ def doc_to_pdf_new(name):
 
 def all_files(): #просматриваем все файлы в директории
     files =[]
-    currentDirectory = pathlib.Path('./static/docs_template')
-    for currentFile in currentDirectory.iterdir():
-        files.append(currentFile.name)
+    currentPattern = '*.pdf'
+    currentDirectory = pathlib.Path('./static')
+    for currentFile in currentDirectory.glob(currentPattern):
+        files.append(str(currentFile.name).replace('.pdf', ''))
+    files.remove('chenge')
+    files.remove('Приклад_1')
+    files.remove('Приклад_2')
     return files
-
-
 
 
 
