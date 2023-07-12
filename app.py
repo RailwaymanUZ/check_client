@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from db import value_to_db
-from functions import make_doc, doc_to_pdf
+from functions import make_doc, doc_to_pdf, doc_to_pdf_new
 
 
 app = Flask(__name__)
@@ -130,6 +130,13 @@ def user_templates():
         '''
         return render_template('user_templates.html', client=client)
 
+@app.route('/upload', methods=['POST', 'GET'])
+def upload():
+    name_new_file = request.form['name_new_file']
+    file = request.files['new_file']
+    file.save(f'static/docs_template/{name_new_file}.docx')
+    doc_to_pdf_new(name_new_file)
+    return redirect('/user_templates')
 
 if __name__ == '__main__':
     app.run(debug=True)

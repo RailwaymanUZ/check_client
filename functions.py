@@ -3,6 +3,7 @@ from docx2pdf import convert
 from datetime import datetime
 from num2words import num2words
 import pythoncom
+import pathlib
 
 def replace_text(doc, old_text, new_text):#функция заменяющая текст в файле
     for paragraph in doc.paragraphs:
@@ -42,6 +43,20 @@ def make_doc(name_templates, name_company, number_doc, company_details, money):
 def doc_to_pdf():
     pythoncom.CoInitialize()
     convert("static/docs_template/chenge.docx", "static/chenge.pdf")
+
+def doc_to_pdf_new(name):
+    pythoncom.CoInitialize()
+    convert(f"static/docs_template/{name}.docx", f"static/{name}.pdf")
+
+def all_files(): #просматриваем все файлы в директории
+    files =[]
+    currentDirectory = pathlib.Path('./static/docs_template')
+    for currentFile in currentDirectory.iterdir():
+        files.append(currentFile.name)
+    return files
+
+
+
 
 
 '''

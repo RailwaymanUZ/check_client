@@ -64,6 +64,13 @@
       </div>
 </div>
 
+<h2>Завантажені шаблони користувача</h2>
+<form method="POST", enctype="multipart/form-data" class="input_group" action="{{ url_for('upload') }}">
+    <input class="form-control" name="name_new_file" placeholder="Введіть назву шаблона">
+    <input class="form-control" type="file" name="new_file" >
+    <input type="submit" class="btn btn-success" value="Завантажити">
+</form>
+
 <script>
 const fruitSelect = document.getElementById('user_templates');
 const fruitInfos = document.getElementsByClassName('docs');
