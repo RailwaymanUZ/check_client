@@ -1,29 +1,49 @@
+import docx
 from docx import Document
+from docx.oxml import ns, parse_xml
+from docx.shared import Pt
 from docx2pdf import convert
 from datetime import datetime
 from num2words import num2words
 import pythoncom
 import pathlib
 
-def replace_text(doc, old_text, new_text):#функция заменяющая текст в файле
-    for paragraph in doc.paragraphs:
-        if old_text in paragraph.text:
-            paragraph.text = paragraph.text.replace(old_text, new_text)
 
+
+
+
+
+
+
+def replace_text(doc, old_text, new_text):
+    for paragraph in doc.paragraphs:
+        new_runs = []
         for run in paragraph.runs:
             if old_text in run.text:
-                run.text = run.text.replace(old_text, new_text)
+                new_run = parse_xml(run._element.xml)
+                new_run.text = new_run.text.replace(old_text, new_text)
+                new_runs.append(new_run)
+            else:
+                new_runs.append(run._element)
+        paragraph._element.clear_content()
+        for new_run in new_runs:
+            paragraph._element.append(new_run)
 
     for table in doc.tables:
         for row in table.rows:
             for cell in row.cells:
                 for paragraph in cell.paragraphs:
-                    if old_text in paragraph.text:
-                        paragraph.text = paragraph.text.replace(old_text, new_text)
-
+                    new_runs = []
                     for run in paragraph.runs:
                         if old_text in run.text:
-                            run.text = run.text.replace(old_text, new_text)
+                            new_run = parse_xml(run._element.xml)
+                            new_run.text = new_run.text.replace(old_text, new_text)
+                            new_runs.append(new_run)
+                        else:
+                            new_runs.append(run._element)
+                    paragraph._element.clear_content()
+                    for new_run in new_runs:
+                        paragraph._element.append(new_run)
 
 
 def make_doc(name_templates, name_company, number_doc, company_details, money):

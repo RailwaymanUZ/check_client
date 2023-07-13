@@ -32,7 +32,7 @@
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
                                 {% endfor %}
                             </select>
-                            <input name="money" class="form-control" placeholder="Введіть сумму"><br>
+                            <input name="money" class="form-control"  pattern="[0-9]*" title="В цьому полі можна вводити тільки цифри" placeholder="Введіть сумму"><br>
                             <button class="btn btn-success" type="submit">Сформувати</button>
                         </form>
                     </td>
@@ -56,7 +56,7 @@
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
                                 {% endfor %}
                             </select>
-                            <input name="money" class="form-control" placeholder="Введіть сумму"><br>
+                            <input name="money" class="form-control" pattern="[0-9]*" title="В цьому полі можна вводити тільки цифри" placeholder="Введіть сумму"><br>
                             <button class="btn btn-success" type="submit">Сформувати</button>
                         </form>
                     </td>
@@ -68,7 +68,7 @@
     <h2>Завантажені шаблони користувача</h2>
     <form method="POST" enctype="multipart/form-data" class="input_group" action="{{ url_for('upload') }}">
         <input class="form-control" name="name_new_file" placeholder="Введіть назву шаблона">
-        <input class="form-control" type="file" name="new_file">
+        <input class="form-control" type="file" name="new_file" accept=".docx">
         <input type="submit" class="btn btn-success" value="Завантажити">
     </form>
 
@@ -97,7 +97,7 @@
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
                                 {% endfor %}
                             </select>
-                            <input name="money" class="form-control" placeholder="Введіть сумму"><br>
+                            <input name="money" class="form-control" pattern="[0-9]*" title="В цьому полі можна вводити тільки цифри" placeholder="Введіть сумму"><br>
                             <button class="btn btn-success" type="submit">Сформувати</button>
                         </form>
                     </td>
