@@ -24,10 +24,10 @@
                         <iframe src="{{ url_for('static', filename='Приклад_1.pdf') }}" width="100%" height="600px"></iframe>
                     </td>
                     <td>
-                        <form method="post" action="/user_templates">
+                        <form method="post" onsubmit="return validateStandartForm1()" action="/user_templates">
                             <input type="hidden" name="doc" value="Приклад_1">
-                            <select class="form-select-sm" name="name_company">
-                                <option selected="selected" disabled>Оберіть необхідного клієнта</option>
+                            <select id="standart_template_1"  class="form-select-sm" name="name_company">
+                                <option value="" selected="selected" disabled>Оберіть необхідного клієнта</option>
                                 {% for element in client %}
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
                                 {% endfor %}
@@ -48,9 +48,9 @@
                         <iframe src="{{ url_for('static', filename='Приклад_2.pdf') }}" width="100%" height="600px"></iframe>
                     </td>
                     <td>
-                        <form method="post" action="/user_templates">
+                        <form method="post" onsubmit="return validateStandartForm1()" action="/user_templates">
                             <input type="hidden" name="doc" value="Приклад_2">
-                            <select class="form-select-sm" name="name_company">
+                            <select id="standart_template_2" class="form-select-sm" name="name_company">
                                 <option selected="selected" disabled>Оберіть необхідного клієнта</option>
                                 {% for element in client %}
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
@@ -89,16 +89,17 @@
                         <iframe src="{{ url_for('static', filename=file ~ '.pdf') }}" width="100%" height="600px"></iframe>
                     </td>
                     <td>
-                        <form method="post" action="/user_templates">
+                        <form method="post" onsubmit="return validateForm()" action="/user_templates">
                             <input type="hidden" name="doc" value="{{ file }}">
-                            <select class="form-select-sm" name="name_company">
-                                <option selected="selected" disabled>Оберіть необхідного клієнта</option>
+                            <select class="form-select-sm" id="templates" name="name_company">
+                                <option value="" selected="selected" disabled selected>Оберіть необхідного клієнта</option>
                                 {% for element in client %}
                                 <option value="{{ element.name_company }}">{{ element.name_company }}</option>
                                 {% endfor %}
                             </select>
                             <input name="money" class="form-control" pattern="[0-9]*" title="В цьому полі можна вводити тільки цифри" placeholder="Введіть сумму"><br>
                             <button class="btn btn-success" type="submit">Сформувати</button>
+                            <button class="btn btn-danger" type="submit" name="delete" value="delete">Видалити шаблон</button>
                         </form>
                     </td>
                 </tr>
@@ -153,4 +154,41 @@
         });
 
     </script>
+
+<script>
+    function validateForm() {
+    var selectElement = document.getElementById("templates");
+    var selectedValue = selectElement.value;
+
+    if (selectedValue === "") {
+        alert("Виберіть необхідного клієнта");
+        return false; // Останавливаем отправку формы
+    }
+
+    }
+</script>
+<script>
+    function validateStandartForm1() {
+    var selectStandartElement1 = document.getElementById("standart_template_1");
+    var selectedValue1 = selectStandartElement1.value;
+
+    if  (selectedValue1 === "") {
+        alert("Виберіть необхідного клієнта");
+        return false;
+        }
+    }
+
+</script>
+<script>
+    function validateStandartForm2() {
+    var selectStandartElement2 = document.getElementById("standart_template_2");
+    var selectedValue2 = selectStandartElement2.value;
+
+    if  (selectedValue2 === "") {
+        alert("Виберіть необхідного клієнта");
+        return false;
+        }
+    }
+
+</script>
 {% endblock %}

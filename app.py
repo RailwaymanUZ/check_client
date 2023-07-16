@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from db import value_to_db
-from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files
+from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files, delete_files
 
 
 app = Flask(__name__)
@@ -102,11 +102,19 @@ def edit_client():
 
 @app.route('/user_templates', methods=['POST', 'GET'])
 def user_templates():
+    if request.method == 'POST' and 'delete' in request.form:
+        name_doc = request.form['doc']
+        delete_files(name_doc)
+        return redirect('/user_templates')
     if request.method == "POST":
         # получаем данные от пользователя с шаблоном и номером документа для генерации
         gen_client = request.form['name_company']
         gen_doc = request.form['doc']
-        gen_money = request.form['money']
+        # проверяем указали ли сумму
+        if request.form['money'] != '':
+            gen_money = request.form['money']
+        else:
+            gen_money = ''
         # выбираем данные из database
         client = Client.query.filter_by(name_company=gen_client).first()
         gen_name = client.name_company
