@@ -1,18 +1,9 @@
-from pathlib import Path
+from app import app
+from app import db
+from app import User
 
+with app.app_context():
+    user = User(login='luda', password='ilovebinotel')
 
-def delete_files(file_name):
-    # Указываем путь к директории
-    directory = Path('static/docs_template')
-    file_path = directory / file_name
-
-    # Проверяем, существует ли файл
-    if file_path.is_file():
-        # Удаляем файл
-        file_path.unlink()
-        print(f"Файл '{file_name}' удален успешно.")
-    else:
-        print(f"Файл '{file_name}' не существует.")
-
-
-delete_files('chenge.docx')
+    db.session.add(user)
+    db.session.commit()
