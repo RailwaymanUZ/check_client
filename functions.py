@@ -1,17 +1,20 @@
+from io import BytesIO
 import docx
 from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
+from docx.text.paragraph import Paragraph
+from docx.table import Table
 from docx.oxml import ns, parse_xml
 from docx.shared import Pt
+from docx.table import _Cell
 from docx2pdf import convert
 from datetime import datetime
 from num2words import num2words
 import pythoncom
 import pathlib
-
-
-
-
-
+from pathlib import Path
+import tempfile
 
 
 
@@ -55,19 +58,21 @@ def make_doc(name_templates, name_company, number_doc, company_details, money):
     if money != '':
         replace_text(doc, 'СУММА', money)
         replace_text(doc, 'ПРОПИСОМ', num2words(int(money), lang='uk'))
-    replace_text(doc, 'ДАТА', f'{datetime.today().day}.{datetime.today().month}.{datetime.today().year}')
-    replace_text(doc, 'МІСЯЦЬ', f'{datetime.today().month}')
+    replace_text(doc, 'ДАТА', f'{datetime.today().day}.{datetime.today().month if datetime.today().month < 10 else str(datetime.today().month)}.{datetime.today().year}')
+    replace_text(doc, 'МІСЯЦЬ', f'{datetime.today().month:02}' if datetime.today().month < 10 else str(datetime.today().month))
     replace_text(doc, 'РІК', f'{datetime.today().year}'[2:])
-    doc.save('static/docs_template/chenge.docx')
+    doc.save(path_to_doc)
 
 
-def doc_to_pdf():
+def doc_to_pdf(name_file):
     pythoncom.CoInitialize()
-    convert("static/docs_template/chenge.docx", "static/chenge.pdf")
+    convert(f"static/docs_template/{name_file}.docx", f"static/{name_file}.pdf")
+
 
 def doc_to_pdf_new(name):
     pythoncom.CoInitialize()
-    convert(f"static/docs_template/{name}.docx", f"static/{name}.pdf")
+    convert(f'{name}.docx', f'{name}.pdf')
+    #convert(f"static/docs_template/{name}.docx", f"static/{name}.pdf")
 
 def all_files(): #просматриваем все файлы в директории
     files =[]
@@ -104,6 +109,31 @@ def delete_files(file_name):
         # Удаляем файл
         file_path.unlink()
 
+def delete_generation_files(id):
+    directory = Path(__file__).resolve().parent
+    docx_file = directory / f'{id}.docx'
+    pdf_file = directory / f'{id}.pdf'
 
+    if docx_file.exists():
+        docx_file.unlink()
 
+    if pdf_file.exists():
+        pdf_file.unlink()
 
+def make_doc_standart(name_templates, name_company, number_doc, company_details, money):
+    path_to_doc = f'static/docs_template/{name_templates}.docx'
+    doc = Document(path_to_doc)
+    replace_text(doc, '**КОМПАНІЯ**', name_company)
+    replace_text(doc, '**НОМЕР_ДОГОВОРУ**', number_doc)
+    replace_text(doc, '**РЕКВІЗИТИ_КОМПАНІЇ**', company_details)
+    if money != '':
+        replace_text(doc, '**СУММА**', money)
+        replace_text(doc, '**ПРОПИСОМ**', num2words(int(money), lang='uk'))
+    replace_text(doc, '**ДАТА**', f'{datetime.today().day}.{datetime.today().month}.{datetime.today().year}')
+    replace_text(doc, '**МІСЯЦЬ**', f'{datetime.today().month}')
+    replace_text(doc, '**РІК**', f'{datetime.today().year}'[2:])
+    doc.save('static/docs_template/standart_template.docx')
+
+def doc_to_pdf_standart():
+    pythoncom.CoInitialize()
+    convert('static/docs_template/standart_template.docx', f'static/standart_template.pdf')

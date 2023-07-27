@@ -5,8 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Сгенерований шаблон</h1>
-    <iframe src="{{ url_for('static', filename='chenge.pdf') }}" width="100%" height="600px"></iframe><br>
-    <a href="{{ url_for('static', filename='docs_template/chenge.docx') }}" class="btn btn-success" download>Завантажити у форматі .docx</a>
+    <iframe src="{{ url_for('static', filename=name_file + '.pdf') }}" width="100%" height="600px"></iframe><br>
+    <a href="{{ url_for('static', filename='docs_template/' + name_file + '.docx') }}" class="btn btn-success" download>Завантажити у форматі .docx</a>
 
 {% endblock %}

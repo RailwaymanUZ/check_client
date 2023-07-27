@@ -5,7 +5,26 @@ from flask_sqlalchemy import SQLAlchemy
 
 from db import value_to_db
 
-from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files, delete_files
+import base64
+
+from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files, delete_files, delete_generation_files, make_doc_standart, doc_to_pdf_standart
+
+
+# переместить эту функцию после того как всё будет работать для нормальной структуры приложения
+def save_pdf_to_db(id, name, content_pdf):
+    user_temp = Document.query.filter_by(id=id, name=name).first()
+    user_temp.format_pdf = content_pdf
+    db.session.add(user_temp)
+    db.session.commit()
+
+def b64encode_filter(data):
+    if data is None:
+        return ''
+    return base64.b64encode(data).decode('utf-8')
+
+
+
+
 
 
 app = Flask(__name__)
@@ -14,6 +33,8 @@ db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 app.secret_key = 'jpiodfujgoisdufg-098ui-09poj;ildskfg'
+app.jinja_env.filters['b64encode'] = b64encode_filter
+
 
 class Client(db.Model):
     id = db.Column(db.Integer, primary_key=False)
@@ -26,8 +47,16 @@ class User(db.Model, UserMixin):
     login = db.Column(db.String(120), nullable=False)
     password = db.Column(db.String(250), nullable=False)
 
-    def __repr__(self):
-        return '<Client &r>' % self.id
+class Document(db.Model):
+    id_doc = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer)
+    name = db.Column(db.String(100))
+    format_docx = db.Column(db.LargeBinary)
+    format_pdf = db.Column(db.LargeBinary)
+
+#    def __repr__(self):
+#        return '<Client &r>' % self.id
+
 
 
 @login_manager.user_loader
@@ -124,9 +153,22 @@ def edit_client():
 @app.route('/user_templates', methods=['POST', 'GET'])
 @login_required
 def user_templates():
+    if request.method == 'POST' and ('Приклад_1' in request.form['doc'] or 'Приклад_2' in request.form['doc']):
+        gen_name_doc = request.form['doc']
+        gen_client = request.form['name_company']
+        if request.form['money'] != '':
+            gen_money = request.form['money']
+        else:
+            gen_money = ''
+        client = Client.query.filter_by(id=current_user.id, name_company=gen_client).first()
+        make_doc_standart(gen_name_doc, client.name_company, client.number_docs, client.company_details, gen_money)
+        doc_to_pdf_standart()
+        return render_template('redy_standart_template.html')
     if request.method == 'POST' and 'delete' in request.form:
         name_doc = request.form['doc']
-        delete_files(name_doc)
+        delete_doc = Document.query.filter_by(id=current_user.id, name=name_doc).first()
+        db.session.delete(delete_doc)
+        db.session.commit()
         return redirect('/user_templates')
     if request.method == "POST":
         # получаем данные от пользователя с шаблоном и номером документа для генерации
@@ -137,21 +179,26 @@ def user_templates():
             gen_money = request.form['money']
         else:
             gen_money = ''
-        # выбираем данные из database
+        # выбираем данные из database Клиентов
         client = Client.query.filter_by(id=current_user.id, name_company=gen_client).first()
         gen_name = client.name_company
         gen_number = client.number_docs
         gen_detail = client.company_details
+        # выбираем данные из database Документов
+        document = Document.query.filter(Document.id==current_user.id, Document.name==gen_doc).first()
+        # вытягиваем файл из бд в статик с именем пользователя
+        with open(f'static/docs_template/{current_user.id}.docx', 'wb') as file:
+            file.write(document.format_docx)
         # формируем docx документ
-        make_doc(gen_doc, gen_name, gen_number, gen_detail, gen_money)
+        make_doc(current_user.id, gen_name, gen_number, gen_detail, gen_money)
         # формируем pdf документ
-        doc_to_pdf()
-
-        return render_template('redy_template.html')
+        doc_to_pdf(current_user.id)
+        return render_template('redy_template.html', name_file=str(current_user.id))
     else:
         #Выбираем всех клиентов
-        client = Client.query.filter_by(id=current_user.id).all()
-        files = all_files()
+        client = Client.query.filter(Client.id == current_user.id).all()
+        files = Document.query.filter(Document.id == current_user.id).all()
+        # обратить внимание на шаблон и грамотно его отредактировать !!!!!!!!
         return render_template('user_templates.html', client=client, files=files)
 
 @app.route('/upload', methods=['POST', 'GET'])
@@ -159,8 +206,23 @@ def user_templates():
 def upload():
     name_new_file = request.form['name_new_file']
     file = request.files['new_file']
-    file.save(f'static/docs_template/{name_new_file}.docx')
-    doc_to_pdf_new(name_new_file)
+    # переводим файл в бинарный код
+    content_doc = file.read()
+    # сохраняем файл для его конвертации в pdf - name = id
+    with open(f'{current_user.id}.docx', 'wb') as docx_file:
+        docx_file.write(content_doc)
+    # cохраняем файл формата pdf
+    doc_to_pdf_new(current_user.id)
+    # сохраем имя и файл docx в бд
+    doc_doc = Document(id=current_user.id, name=name_new_file, format_docx=content_doc)
+    db.session.add(doc_doc)
+    db.session.commit()
+    # сохраняем файл в формате pdf в БД
+    with open(f'{current_user.id}.pdf', 'rb') as pdf_file:
+        content_pdf = pdf_file.read()
+    save_pdf_to_db(current_user.id, name_new_file, content_pdf)
+    #удаляем файлы который созадвались для переноса в бд
+    delete_generation_files(current_user.id)
     return redirect('/user_templates')
 
 @app.route('/login', methods=['POST', 'GET'])
