@@ -6,11 +6,18 @@
 
 {% block body %}
     <h1>Додавання клієнта</h1>
-    <div class="container mt-5">
+    <div class="container mt-5" height="">
     <form method="POST">
         <input type="text" name="name_company" id="name_company" class="form-control" placeholder="Введіть назву компанії" required><br>
-        <input type="number_docs" name="number_docs" id="number_docs" class="form-control" placeholder="Введіть номер рахунку" required><br>
-        <textarea name="company_details" id="company_details" class="form-control" rows="12" placeholder="Введіть реквізити компанії" required></textarea><br>
+        <input type="number_docs" name="number_docs" id="number_docs" class="form-control" placeholder="Введіть номер документу (частіше це є номер договору)" required><br>
+        <input name="adress" id="adress" class="form-control" placeholder="Введіть адресу"><br>
+        <input name="edrpou" id="edrpou" class="form-control" placeholder="Введіть ЄДРПОУ"><br>
+        <input name="ipn" id="ipn" class="form-control" placeholder="Введіть ІПН"><br>
+        <input name="iban" id="iban" class="form-control" placeholder="Введіть IBAN"><br>
+        <input type="tel" name="tel" id="tel" class="form-control" placeholder="Введіть номер телефону"><br>
+        <input type="email" name="email" id="email" class="form-control" placeholder="Введіть електронну адресу"><br>
+        <textarea name="other_data" id="other_data" class="form-control" rows="12" placeholder="Введіть інші данні"></textarea><br>
+        <input type="text" name="director" id="director" class="form-control" placeholder="Введіть ПІБ підписанта (директора)"><br>
         <input type="submit" class="btn btn-success" value="Додати">
     </form>
     </div>

@@ -6,25 +6,48 @@
 
 {% block body %}
     <h1>Список всіх клієнтів</h1>
-    <table class="table table-hover">
+    <div class="d-flex flex-wrap align-items-center justify-content-lg-start">
+     <div class="table-responsive" style="overflow-x: auto;">
+        <table class="table mb-2 justify-content-center mb-md-0" style="width: 100%;">
         <thead>
         <tr>
             <th>Назва компанії</th>
             <th>Номер документа</th>
-            <th>Реквізити компанії</th>
+            <th>Адреса</th>
+            <th>ЄВРПОУ</th>
+            <th>ІПН</th>
+            <th>IBAN</th>
+            <th>Номер телефону</th>
+            <th>Електронна адреса</th>
+            <th>Інші данні</th>
+            <th>Директор(підписант)</th>
         </tr>
         </thead>
         <tbody>
         {% for elements in client %}
-            <tr onclick="toggleList(event)">
+            <tr>
                 <td>{{ elements.name_company }}</td>
                 <td>{{ elements.number_docs }}</td>
-                <td>{{ elements.company_details }}</td>
+                <td>{{ elements.adress }}</td>
+                <td>{{ elements.edrpou }}</td>
+                <td class="vision">{{ elements.ipn }}</td>
+                <td class="vision">{{ elements.iban }}</td>
+                <td>{{ elements.tel }}</td>
+                <td class="vision">{{ elements.email }}</td>
+                <td class="vision">{{ elements.other_data }}</td>
+                <td>{{ elements.director }}</td>
                 <td>
                     <form action="/edit_client" method="POST">
                         <input type="hidden" name="name_company" value="{{ elements.name_company }}">
                         <input type="hidden" name="number_docs" value="{{ elements.number_docs }}">
-                        <input type="hidden" name="company_details" value="{{ elements.company_details }}">
+                        <input type="hidden" name="adress" value="{{ elements.adress }}">
+                        <input type="hidden" name="edrpou" value="{{ elements.edrpou }}">
+                        <input type="hidden" name="ipn" value="{{ elements.ipn }}">
+                        <input type="hidden" name="iban" value="{{ elements.iban }}">
+                        <input type="hidden" name="tel" value="{{ elements.tel }}">
+                        <input type="hidden" name="email" value="{{ elements.email}}">
+                        <input type="hidden" name="other_data" value="{{ elements.other_data}}">
+                        <input type="hidden" name="director" value="{{ elements.director }}">
                         <input type="hidden" name="hiden_information" value="first_vision">
                         <button class="btn btn-success" type="submit">Редагувати</button>
                     </form>
@@ -33,7 +56,6 @@
                     <form action="/delete_client" method="POST">
                         <input type="hidden" name="name_company" value="{{ elements.name_company }}">
                         <input type="hidden" name="number_docs" value="{{ elements.number_docs }}">
-                        <input type="hidden" name="company_details" value="{{ elements.company_details }}">
                         <button class="btn btn-danger" type="submit">Видалити</button>
                     </form>
 
@@ -42,6 +64,8 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
+    </div>
     <a href="/add_client" class="btn btn-success">Додати нового клієнта</a>
 
 

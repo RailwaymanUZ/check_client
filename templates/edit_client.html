@@ -10,11 +10,25 @@
     <form method="POST">
         <input type="hidden" name="old_name_company" value="{{ old_client.name_company }}">
         <input type="hidden" name="old_number_docs" value="{{ old_client.number_docs}}">
-        <input type="hidden" name="old_company_details" value="{{ old_client.company_details }}">
+        <input type="hidden" name="old_adress" value="{{ old_client.adress }}">
+        <input type="hidden" name="old_edrpou" value="{{ old_client.edrpou }}">
+        <input type="hidden" name="old_ipn" value="{{ old_client.ipn }}">
+        <input type="hidden" name="old_iban" value="{{ old_client.iban }}">
+        <input type="hidden" name="old_tel" value="{{ old_client.tel }}">
+        <input type="hidden" name="old_email" value="{{ old_client.email }}">
+        <input type="hidden" name="old_other_data" value="{{ old_client.other_data }}">
+        <input type="hidden" name="old_director" value="{{ old_client.director }}">
         <input type="hidden" name="hiden_information" value="chenge">
-        <input type="text" name="name_company" id="name_company" class="form-control" value="{{ old_client.name_company }}" required><br>
-        <input type="number_docs" name="number_docs" id="number_docs" class="form-control" value="{{ old_client.number_docs }}" required><br>
-        <textarea name="company_details" id="company_details" class="form-control" rows="12" required>{{ old_client.company_details }}</textarea><br>
+        <input type="text" name="name_company" id="name_company" class="form-control" value="{{ old_client.name_company }}" placeholder="Назва компанії" required><br>
+        <input type="text" name="number_docs" id="number_docs" class="form-control" value="{{ old_client.number_docs }}" placeholder="Номер документа" required><br>
+        <input name="adress" id="adress" class="form-control" value="{{ old_client.adress }}" placeholder="Адреса"><br>
+        <input name="edrpou" id="edrpou" class="form-control" value="{{ old_client.edrpou }}" placeholder="ЄДРПОУ"><br>
+        <input name="ipn" id="ipn" class="form-control" value="{{ old_client.ipn}}" placeholder="ІПН"><br>
+        <input name="iban" id="iban" class="form-control" value="{{ old_client.iban }}" placeholder="IBAN"><br>
+        <input name="tel" id="tel" class="form-control" value="{{ old_client.tel }}" placeholder="Телефон"><br>
+        <input name="email" id="email" class="form-control" value="{{ old_client.email }}" placeholder="електронна адреса"><br>
+        <textarea name="other_data" id="other_data" class="form-control" rows="5" placeholder="інша інформація">{{ old_client.other_data }}</textarea><br>
+        <input name="director" id="director" class="form-control" value="{{ old_client.director }}" placeholder="Підписант (частіше директор компанії)"><br>
         <input type="submit" class="btn btn-success" value="Підтвердити редагування">
     </form>
     </div>

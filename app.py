@@ -38,9 +38,17 @@ app.jinja_env.filters['b64encode'] = b64encode_filter
 
 class Client(db.Model):
     id = db.Column(db.Integer, primary_key=False)
-    name_company = db.Column(db.String(100), primary_key=True)
+    name_company = db.Column(db.String(100), primary_key=True, nullable=False)
     number_docs = db.Column(db.String(100), primary_key=True)
-    company_details = db.Column(db.Text, nullable=True)
+    adress = db.Column(db.Text)
+    edrpou = db.Column(db.Integer)
+    ipn = db.Column(db.String(50))
+    iban = db.Column(db.String(100))
+    tel = db.Column(db.String(100))
+    email = db.Column(db.String(50))
+    other_data = db.Column(db.Text)
+    director = db.Column(db.String(50))
+
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True, unique=True)
@@ -68,6 +76,11 @@ def load_user(user_id):
 def index():
     return render_template('index.html',current_user=current_user)
 
+@app.route('/faqs')
+def faqs():
+    return render_template('faqs.html')
+
+
 @app.route('/add_client', methods=['POST', 'GET'])
 @login_required
 def add_client():
@@ -80,11 +93,17 @@ def add_client():
         if value_to_db(number_doc) != True:
             return render_template('error_page.html')
 
-        company_details = request.form['company_details']
-        if value_to_db(company_details) != True:
-            return render_template('error_page.html')
-        # id клиента надо заменить на пользователя
-        client = Client(id=current_user.id,name_company=name_company, number_docs=number_doc, company_details=company_details)
+        adress = request.form['adress']
+        edrpou = request.form['edrpou']
+        ipn = request.form['ipn']
+        iban = request.form['iban']
+        tel = request.form['tel']
+        email = request.form['email']
+        other_data = request.form['other_data']
+        director = request.form['director']
+        # делаем запись в бд
+        client = Client(id=current_user.id,name_company=name_company, number_docs=number_doc, adress=adress, edrpou=edrpou,
+                        ipn=ipn, iban=iban, tel=tel, email=email, other_data=other_data, director=director)
         try:
             db.session.add(client)
             db.session.commit()
@@ -107,9 +126,7 @@ def all_client():
 def delete_client():
     name_company = request.form['name_company']
     number_docs = request.form['number_docs']
-    company_details = request.form['company_details']
-    del_client = Client.query.filter_by(id=current_user.id, name_company=name_company, number_docs=number_docs,
-                                        company_details=company_details).first()
+    del_client = Client.query.filter_by(id=current_user.id, name_company=name_company, number_docs=number_docs,).first()
     if del_client:
         db.session.delete(del_client)
         db.session.commit()
@@ -124,25 +141,53 @@ def edit_client():
     if hiden_information == 'first_vision':
         name_company = request.form['name_company']
         number_docs = request.form['number_docs']
-        company_details = request.form['company_details']
-        old_client = Client(id=current_user.id, name_company=name_company, number_docs=number_docs, company_details=company_details)
+        adress = request.form['adress']
+        edrpou = request.form['edrpou']
+        ipn = request.form['ipn']
+        iban = request.form['iban']
+        tel = request.form['tel']
+        email = request.form['email']
+        other_data = request.form['other_data']
+        director = request.form['director']
+
+        old_client = Client(id=current_user.id,name_company=name_company, number_docs=number_docs, adress=adress, edrpou=edrpou,
+                        ipn=ipn, iban=iban, tel=tel, email=email, other_data=other_data, director=director)
 
         return render_template('edit_client.html', old_client=old_client)
 
     if hiden_information == 'chenge':
+        # выбираем старые значения
         old_name_company = request.form['old_name_company']
         old_number_docs = request.form['old_number_docs']
-        old_company_details = request.form['old_company_details']
+        old_adress = request.form['old_adress']
+        old_edrpou = request.form['old_edrpou']
+        old_ipn = request.form['old_ipn']
+        old_iban = request.form['old_iban']
+        old_tel = request.form['old_tel']
+        old_email = request.form['old_email']
+        old_other_data = request.form['old_other_data']
+        old_director = request.form['old_director']
+        #d выбираем новые значения
         name_company = request.form['name_company']
         number_docs = request.form['number_docs']
-        company_details = request.form['company_details']
-        if old_name_company != name_company or old_number_docs != number_docs or old_company_details != company_details:
-            old_client = Client.query.filter_by(id=current_user.id, name_company=old_name_company, number_docs=old_number_docs,
-                                        company_details=old_company_details).first()
+        adress = request.form['adress']
+        edrpou = request.form['edrpou']
+        ipn = request.form['ipn']
+        iban = request.form['iban']
+        tel = request.form['tel']
+        email = request.form['email']
+        other_data = request.form['other_data']
+        director = request.form['director']
+        # проверяем, есть ли изменения
+        if old_name_company != name_company or old_number_docs != number_docs or old_adress != adress\
+                or old_edrpou != edrpou or old_ipn != ipn or old_iban != iban or old_tel != tel or old_email != email\
+                or old_other_data != other_data or old_director != director:
+            old_client = Client.query.filter_by(id=current_user.id, name_company=old_name_company, number_docs=old_number_docs).first()
             if old_client:
                 db.session.delete(old_client)
                 db.session.commit()
-            edit_client = Client(id=current_user.id, name_company=name_company, number_docs=number_docs, company_details=company_details)
+            edit_client = Client(id=current_user.id,name_company=name_company, number_docs=number_docs, adress=adress, edrpou=edrpou,
+                        ipn=ipn, iban=iban, tel=tel, email=email, other_data=other_data, director=director)
             try:
                 db.session.add(edit_client)
                 db.session.commit()
@@ -183,14 +228,22 @@ def user_templates():
         client = Client.query.filter_by(id=current_user.id, name_company=gen_client).first()
         gen_name = client.name_company
         gen_number = client.number_docs
-        gen_detail = client.company_details
+        gen_adress = client.adress
+        gen_edrpou = client.edrpou
+        gen_ipn = client.ipn
+        gen_iban = client.iban
+        gen_tel = client.tel
+        gen_email = client.email
+        gen_other_data = client.other_data
+        gen_director = client.director
         # выбираем данные из database Документов
         document = Document.query.filter(Document.id==current_user.id, Document.name==gen_doc).first()
         # вытягиваем файл из бд в статик с именем пользователя
         with open(f'static/docs_template/{current_user.id}.docx', 'wb') as file:
             file.write(document.format_docx)
         # формируем docx документ
-        make_doc(current_user.id, gen_name, gen_number, gen_detail, gen_money)
+        make_doc(current_user.id, gen_name, gen_number, gen_adress, gen_edrpou, gen_ipn, gen_iban, gen_tel, gen_email,
+                 gen_other_data, gen_director, gen_money)
         # формируем pdf документ
         doc_to_pdf(current_user.id)
         return render_template('redy_template.html', name_file=str(current_user.id))
@@ -208,6 +261,10 @@ def upload():
     file = request.files['new_file']
     # переводим файл в бинарный код
     content_doc = file.read()
+    # проверяем добавлялся ли файл в загрузку
+    if len(content_doc) == 0:
+        flash('Необхідно завантажити файл')
+        return redirect('/user_templates')
     # сохраняем файл для его конвертации в pdf - name = id
     with open(f'{current_user.id}.docx', 'wb') as docx_file:
         docx_file.write(content_doc)

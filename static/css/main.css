@@ -1,0 +1,10 @@
+.table {
+  table-layout: fixed; /* Фиксированная ширина таблицы */
+  width: 100%; /* Ширина таблицы на всю доступную ширину контейнера */
+}
+
+.vision {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

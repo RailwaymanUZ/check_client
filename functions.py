@@ -15,9 +15,14 @@ import pythoncom
 import pathlib
 from pathlib import Path
 import tempfile
+import calendar
+import locale
 
+locale.setlocale(locale.LC_ALL, 'uk_UA.UTF-8')
 
-
+def month_number_to_name(month_number):
+    month_number = int(month_number)
+    return calendar.month_name[month_number]
 def replace_text(doc, old_text, new_text):
     for paragraph in doc.paragraphs:
         new_runs = []
@@ -49,17 +54,31 @@ def replace_text(doc, old_text, new_text):
                         paragraph._element.append(new_run)
 
 
-def make_doc(name_templates, name_company, number_doc, company_details, money):
+def make_doc(name_templates, name_company, number_doc, adress, edrpou, ipn, iban, tel, email, other_data, director, money):
     path_to_doc = f'static/docs_template/{name_templates}.docx'
     doc = Document(path_to_doc)
     replace_text(doc, 'КОМПАНІЯ', name_company)
     replace_text(doc, 'НОМЕР_ДОГОВОРУ', number_doc)
-    replace_text(doc, 'РЕКВІЗИТИ_КОМПАНІЇ', company_details)
+    replace_text(doc, 'АДРЕСАГЕН', adress)
+    replace_text(doc, 'ЄДРПОУГЕН', str(edrpou))
+    replace_text(doc, 'ІПНГЕН', ipn)
+    replace_text(doc, 'ІБАНГЕН', iban)
+    replace_text(doc, 'ТЕЛЕФОН', tel)
+    replace_text(doc, 'ЕПОШТА', email)
+    replace_text(doc, 'ІНША_ІНФОРМАЦІЯ',other_data)
+    replace_text(doc, 'ПІДПИСАНТ', director)
     if money != '':
         replace_text(doc, 'СУММА', money)
         replace_text(doc, 'ПРОПИСОМ', num2words(int(money), lang='uk'))
     replace_text(doc, 'ДАТА', f'{datetime.today().day}.{datetime.today().month if datetime.today().month < 10 else str(datetime.today().month)}.{datetime.today().year}')
+    replace_text(doc, 'МИНУЛИЙМІСЯЦЬПРОПИС', month_number_to_name(
+        f'{datetime.today().month - 1:02}' if datetime.today().month - 1 < 10 else str(datetime.today().month - 1)))
+    replace_text(doc, 'МИНУЛИЙМІСЯЦЬ', f'{datetime.today().month - 1:02}' if datetime.today().month - 1 < 10 else str(
+        datetime.today().month - 1))
+    replace_text(doc, 'МІСЯЦЬПРОПИС', month_number_to_name(
+        f'{datetime.today().month:02}' if datetime.today().month < 10 else str(datetime.today().month)))
     replace_text(doc, 'МІСЯЦЬ', f'{datetime.today().month:02}' if datetime.today().month < 10 else str(datetime.today().month))
+    replace_text(doc, 'ПОВНИЙРІК', f'{datetime.today().year}')
     replace_text(doc, 'РІК', f'{datetime.today().year}'[2:])
     doc.save(path_to_doc)
 
