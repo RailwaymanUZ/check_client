@@ -9,6 +9,7 @@ import base64
 
 from functions import make_doc, doc_to_pdf, doc_to_pdf_new, all_files, delete_files, delete_generation_files, make_doc_standart, doc_to_pdf_standart
 
+from waitress import serve
 
 # переместить эту функцию после того как всё будет работать для нормальной структуры приложения
 def save_pdf_to_db(id, name, content_pdf):
@@ -311,4 +312,6 @@ def refirect_to_index(response):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+    serve(app, host='0.0.0.0', port=8080, threads=10)
+
