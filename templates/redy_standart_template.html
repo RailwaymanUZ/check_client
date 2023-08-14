@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Сгенерований шаблон
+{% endblock %}
+
+{% block body %}
+    <iframe src="{{ url_for('static', filename='standart_template.pdf') }}" width="100%" height="600px"></iframe><br>
+    <a href="{{ url_for('static', filename='docs_template/standart_template.docx') }}" class="btn btn-success" download>Завантажити у форматі .docx</a>
+
+{% endblock %}

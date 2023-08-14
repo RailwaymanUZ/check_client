@@ -312,6 +312,7 @@ def refirect_to_index(response):
 
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-    serve(app, host='0.0.0.0', port=8080, threads=10)
+    app.run(debug=True)
+    # розкоментировать для wsgi сервера
+    #serve(app, host='0.0.0.0', port=8080, threads=10)
 
